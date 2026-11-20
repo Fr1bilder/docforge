@@ -1,0 +1,20 @@
+name: Build and test
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - run: mvn -B clean verify
+      - run: java -jar target/docforge-1.0.0.jar --workspace target/demo --demo
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DocForge
+          path: target/docforge-1.0.0.jar
